@@ -56,9 +56,9 @@ func div_fp {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let (div) = abs_value(y)
     let (div_sign) = sign(y)
     tempvar product = x * FRACT_PART
-    let (ures, _) = signed_div_rem(product, div, BOUND)
-    assert_64x61(ures)
-    return (res = ures * div_sign)
+    let (res_u, _) = signed_div_rem(product, div, BOUND)
+    assert_64x61(res_u)
+    return (res = res_u * div_sign)
 end
 
 # Calclates the value of x^y and checks for overflow before returning
@@ -81,13 +81,13 @@ func pow_fp {range_check_ptr} (x: felt, y: felt) -> (res: felt):
 
     let (half_exp, rem) = unsigned_div_rem(exp_val, 2)
     let (half_pow) = pow_fp(x, half_exp)
-    let (pres) = mul_fp(half_pow, half_pow)
+    let (res_p) = mul_fp(half_pow, half_pow)
 
     if rem == 0:
-        assert_64x61(pres)
-        return (pres)
+        assert_64x61(res_p)
+        return (res_p)
     else:
-        let (res) = mul_fp(pres, x)
+        let (res) = mul_fp(res_p, x)
         assert_64x61(res)
         return (res)
     end
@@ -108,6 +108,8 @@ end
 # Calculates the most significant bit where x is a fixed point value
 # TODO: use binary search to improve performance
 func _msb {range_check_ptr} (x: felt) -> (res: felt):
+    alloc_locals
+
     let (cmp) = is_le(x, FRACT_PART)
 
     if cmp == 1:
@@ -116,7 +118,8 @@ func _msb {range_check_ptr} (x: felt) -> (res: felt):
 
     let (div, _) = unsigned_div_rem(x, 2)
     let (rest) = _msb(div)
-    let res = 1 + rest
+    local res = 1 + rest
+    assert_64x61(res)
     return (res)
 end
 
@@ -148,14 +151,17 @@ func exp2_fp {range_check_ptr} (x: felt) -> (res: felt):
     let (r4) = mul_fp(r5 + a4, frac_part)
     let (r3) = mul_fp(r4 + a3, frac_part)
     let (r2) = mul_fp(r3 + a2, frac_part)
-    local frac_res = r2 + a1
+    tempvar frac_res = r2 + a1
 
-    let (ures) = mul_fp(int_res, frac_res)
+    let (res_u) = mul_fp(int_res, frac_res)
     
     if exp_sign == -1:
-        return div_fp(ONE, ures)
+        let (res_i) = div_fp(ONE, res_u)
+        assert_64x61(res_i)
+        return (res_i)
     else:
-        return (ures)
+        assert_64x61(res_u)
+        return (res_u)
     end
 end
 
@@ -183,8 +189,8 @@ func log2_fp {range_check_ptr} (x: felt) -> (res: felt):
     # Compute negative inverse binary log if 0 < x < 1
     if is_frac == 1:
         let (div) = div_fp(ONE, x)
-        let (ires) = log2_fp(div)
-        return (-ires)
+        let (res_i) = log2_fp(div)
+        return (-res_i)
     end
 
     let (x_over_two, _) = unsigned_div_rem(x, 2)
@@ -192,17 +198,19 @@ func log2_fp {range_check_ptr} (x: felt) -> (res: felt):
     let (divisor) = pow(2, b)
     let (norm, _) = unsigned_div_rem(x, divisor)
 
-    # 2.773e-7 maximum error
-    const a1 = -7483700926368029834
-    const a2 = 16449814641801457351
-    const a3 = -17280288391508907035
-    const a4 = 13331091805175516488
-    const a5 = -6882990609484111548
-    const a6 = 2255333401508833754
-    const a7 = -424135990449832908
-    const a8 = 34876708657633277
+    # 4.233e-8 maximum error
+    const a1 = -7898418853509069178
+    const a2 = 18803698872658890801
+    const a3 = -23074885139408336243
+    const a4 = 21412023763986120774
+    const a5 = -13866034373723777071
+    const a6 = 6084599848616517800
+    const a7 = -1725595270316167421
+    const a8 = 285568853383421422
+    const a9 = -20957604075893688
 
-    let (r8) = mul_fp(a8, norm)
+    let (r9) = mul_fp(a9, norm)
+    let (r8) = mul_fp(r9 + a8, norm)
     let (r7) = mul_fp(r8 + a7, norm)
     let (r6) = mul_fp(r7 + a6, norm)
     let (r5) = mul_fp(r6 + a5, norm)
@@ -213,6 +221,7 @@ func log2_fp {range_check_ptr} (x: felt) -> (res: felt):
 
     let (int_part) = to64x61(b)
     local res = int_part + norm_res
+    assert_64x61(res)
     return (res)
 end
 
@@ -245,10 +254,9 @@ func _sin_fp_loop {range_check_ptr} (x: felt, i: felt, acc: felt) -> (res: felt)
     end
 
     let (num) = mul_fp(x, x)
-    local div = (2 * i + 2) * (2 * i + 3) * FRACT_PART
+    tempvar div = (2 * i + 2) * (2 * i + 3) * FRACT_PART
     let (t) = div_fp(num, div)
     let (t_acc) = mul_fp(t, acc)
-
     let (next) = _sin_fp_loop(x, i - 1, ONE - t_acc)
     return (next)
 end
@@ -258,14 +266,15 @@ end
 func sin_fp {range_check_ptr} (x: felt) -> (res: felt):
     alloc_locals
 
-    let (sign1) = sign(x) # extract sign
+    let (_sign1) = sign(x) # extract sign
     let (abs1) = abs_value(x)
     let (_, x1) = unsigned_div_rem(abs1, 2 * PI)
     let (rem, x2) = unsigned_div_rem(x1, PI)
-    local sign2 = 1 - (2 * rem)
-    let (acc) = _sin_fp_loop(x2, 5, ONE)
+    local _sign2 = 1 - (2 * rem)
+    let (acc) = _sin_fp_loop(x2, 6, ONE)
     let (res2) = mul_fp(x2, acc)
-    local res = res2 * sign1 * sign2
+    local res = res2 * _sign1 * _sign2
+    assert_64x61(res)
     return (res)
 end
 
@@ -306,7 +315,7 @@ func atan_fp {range_check_ptr} (x: felt) -> (res: felt):
     # Invert value when x > 1
     let (_invert) = is_le(ONE, abs_x)
     local x1a_num = abs_x * (1 - _invert) + _invert * ONE
-    local x1a_div = abs_x * _invert + ONE - ONE * _invert
+    tempvar x1a_div = abs_x * _invert + ONE - ONE * _invert
     let (x1a) = div_fp(x1a_num, x1a_div)
 
     # Account for lack of precision in polynomaial when x > 0.7
@@ -314,30 +323,74 @@ func atan_fp {range_check_ptr} (x: felt) -> (res: felt):
     local b = sqrt3_3 * _shift + ONE - _shift * ONE
     local x1b_num = x1a - b
     let (x1b_div_2) = mul_fp(x1a, b)
-    local x1b_div = ONE + x1b_div_2
+    tempvar x1b_div = ONE + x1b_div_2
     let (x1b) = div_fp(x1b_num, x1b_div)
     local x1 = x1a * (1 - _shift) + x1b * _shift
 
-    # 5.242e-7 maximum error
-    const a1 = 1208801451666
-    const a2 = 2305693433466554256
-    const a3 = 2963328028465977
-    const a4 = -789082839276858396
-    const a5 = 53632802362123506
-    const a6 = 456545008278073597
-    const a7 = -222313812691352603
-
-    let (r7) = mul_fp(a7, x1)
+    # 6.769e-8 maximum error
+    const a1 = -156068910203
+    const a2 = 2305874223272159097
+    const a3 = -1025642721113314
+    const a4 = -755722092556455027
+    const a5 = -80090004380535356
+    const a6 = 732863004158132014
+    const a7 = -506263448524254433
+    const a8 = 114871904819177193
+    
+    let (r8) = mul_fp(a8, x1)
+    let (r7) = mul_fp(r8 + a7, x1)
     let (r6) = mul_fp(r7 + a6, x1)
     let (r5) = mul_fp(r6 + a5, x1)
     let (r4) = mul_fp(r5 + a4, x1)
     let (r3) = mul_fp(r4 + a3, x1)
     let (r2) = mul_fp(r3 + a2, x1)
-    local z1 = r2 + a1
+    tempvar z1 = r2 + a1
 
     # Adjust for sign change, inversion, and shift
-    local z2 = z1 + (pi_6 * _shift)
-    local z3 = (z2 - (HALF_PI * _invert)) * (1 - _invert * 2)
-    local z4 = z3 * _sign
-    return (z4)
+    tempvar z2 = z1 + (pi_6 * _shift)
+    tempvar z3 = (z2 - (HALF_PI * _invert)) * (1 - _invert * 2)
+    local res = z3 * _sign
+    assert_64x61(res)
+    return (res)
+end
+
+# Calculates arcsin(x) for -1 <= x <= 1 (fixed point)
+# arcsin(x) = arctan(x / sqrt(1 - x^2))
+@view
+func asin_fp {range_check_ptr} (x: felt) -> (res: felt):
+    alloc_locals
+
+    let (_sign) = sign(x)
+    let (x1) = abs_value(x)
+
+    if x1 == ONE:
+        return (HALF_PI * _sign)
+    end
+
+    let (x1_2) = mul_fp(x1, x1)
+    let (div) = sqrt_fp(ONE - x1_2)
+    let (atan_arg) = div_fp(x1, div)
+    let (res_u) = atan_fp(atan_arg)
+    return (res_u * _sign)
+end
+
+# Calculates arccos(x) for -1 <= x <= 1 (fixed point)
+# arccos(x) = arcsin(sqrt(1 - x^2)) - arctan identity has discontinuity at zero
+@view
+func acos_fp {range_check_ptr} (x: felt) -> (res: felt):
+    alloc_locals
+
+    let (_sign) = sign(x)
+    let (x1) = abs_value(x)
+    let (x1_2) = mul_fp(x1, x1)
+    let (asin_arg) = sqrt_fp(ONE - x1_2)
+    let (res_u) = asin_fp(asin_arg)
+
+    if _sign == -1:
+        local res = PI - res_u
+        assert_64x61(res)
+        return (res)
+    else:
+        return (res_u)
+    end
 end
