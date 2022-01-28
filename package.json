@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@shardlabs/starknet-hardhat-plugin": "^0.3.10",
+    "almost-equal": "^1.1.0",
+    "bignumber.js": "^9.0.2",
+    "chai": "^4.3.4",
+    "hardhat": "^2.8.3"
+  }
+}
