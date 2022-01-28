@@ -1,4 +1,13 @@
 {
+  "name": "@infuenceth/cairo-math-64x61",
+  "version": "1.0.0",
+  "description": "Fixed point 64.61 math library for Cairo / Starknet",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/influenceth/cairo-math-64x61.git"
+  },
+  "author": "Unstoppable Games, Inc.",
+  "license": "UNLICENSED",
   "devDependencies": {
     "@shardlabs/starknet-hardhat-plugin": "^0.3.10",
     "almost-equal": "^1.1.0",
