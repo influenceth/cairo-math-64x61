@@ -13,7 +13,7 @@ describe('64.61 fixed point math', function () {
   let contract;
 
   before(async () => {
-    const contractFactory = await starknet.getContractFactory('math_64x61_mock');
+    const contractFactory = await starknet.getContractFactory('Math64x61Mock');
     contract = await contractFactory.deploy();
   });
 
@@ -24,7 +24,7 @@ describe('64.61 fixed point math', function () {
 
     for (const [ i, x ] of xs.entries()) {
       const y = ys[i];
-      const { res } = await contract.call('mul_fp_test', {
+      const { res } = await contract.call('Math64x61_mul_test', {
         x: to64x61(x),
         y: to64x61(y)
       });
@@ -41,7 +41,7 @@ describe('64.61 fixed point math', function () {
 
     for (const [ i, x ] of xs.entries()) {
       const y = ys[i];
-      const { res } = await contract.call('div_fp_test', {
+      const { res } = await contract.call('Math64x61_div_test', {
         x: to64x61(x),
         y: to64x61(y)
       });
@@ -57,7 +57,7 @@ describe('64.61 fixed point math', function () {
 
     for (const [ i, x ] of xs.entries()) {
       const y = ys[i];
-      const { res } = await contract.call('pow_fp_test', {
+      const { res } = await contract.call('Math64x61_pow_test', {
         x: to64x61(x),
         y: toFelt(y)
       });
@@ -71,7 +71,7 @@ describe('64.61 fixed point math', function () {
     const xs = [ 1, 64, 2 ** 32, 7.21 ** 2 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('sqrt_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Math64x61_sqrt_test', { x: to64x61(x) });
       const exp = Math.sqrt(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -81,7 +81,7 @@ describe('64.61 fixed point math', function () {
     const xs = [ 0, 1, 3, 5.5, -1, -5.5 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('exp2_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Math64x61_exp2_test', { x: to64x61(x) });
       const exp = 2 ** x;
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -91,7 +91,7 @@ describe('64.61 fixed point math', function () {
     const xs = [ 0.5, 0.75, 1, 2, 5, 72.11 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('log2_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Math64x61_log2_test', { x: to64x61(x) });
       const exp = Math.log2(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -101,7 +101,7 @@ describe('64.61 fixed point math', function () {
     const xs = [ 0.5, 1, Math.E, 5, 72.11 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('ln_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Math64x61_ln_test', { x: to64x61(x) });
       const exp = Math.log(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -111,7 +111,7 @@ describe('64.61 fixed point math', function () {
     const xs = [ 0.5, 1, 2, 10, 72.11 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('log10_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Math64x61_log10_test', { x: to64x61(x) });
       const exp = Math.log10(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }

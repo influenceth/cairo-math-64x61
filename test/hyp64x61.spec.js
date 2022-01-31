@@ -13,7 +13,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
   let contract;
 
   before(async () => {
-    const contractFactory = await starknet.getContractFactory('hyp_64x61_mock');
+    const contractFactory = await starknet.getContractFactory('Hyp64x61Mock');
     contract = await contractFactory.deploy();
   });
 
@@ -21,7 +21,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ -10 , -2, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 2, 10 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('sinh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_sinh_test', { x: to64x61(x) });
       const exp = Math.sinh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -31,7 +31,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ -10 , -2, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 2, 10 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('cosh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_cosh_test', { x: to64x61(x) });
       const exp = Math.cosh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -41,7 +41,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ -10 , -2, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 2, 10 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('tanh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_tanh_test', { x: to64x61(x) });
       const exp = Math.tanh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -51,7 +51,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ -10 , -2, -1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1, 2, 10 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('asinh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_asinh_test', { x: to64x61(x) });
       const exp = Math.asinh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -61,7 +61,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ 1, 1.5, 2, 4, 10 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('acosh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_acosh_test', { x: to64x61(x) });
       const exp = Math.acosh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -71,7 +71,7 @@ describe('64.61 fixed point hyperbolic functions', function () {
     const xs = [ -0.95, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 0.95 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('atanh_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Hyp64x61_atanh_test', { x: to64x61(x) });
       const exp = Math.atanh(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }

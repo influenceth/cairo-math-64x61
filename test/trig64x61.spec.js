@@ -13,7 +13,7 @@ describe('64.61 fixed point trigonometric functions', function () {
   let contract;
 
   before(async () => {
-    const contractFactory = await starknet.getContractFactory('trig_64x61_mock');
+    const contractFactory = await starknet.getContractFactory('Trig64x61Mock');
     contract = await contractFactory.deploy();
   });
 
@@ -21,7 +21,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -2.25, -2, -1.75, -1.5, -1.25, -1, -0.75, -0.5, -0.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('sin_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_sin_test', { x: toFelt(PI.times(x)) });
       const exp = Math.sin(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -31,7 +31,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('sin_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_sin_test', { x: toFelt(PI.times(x)) });
       const exp = Math.sin(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -41,7 +41,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -2.25, -2, -1.75, -1.5, -1.25, -1, -0.75, -0.5, -0.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('cos_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_cos_test', { x: toFelt(PI.times(x)) });
       const exp = Math.cos(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -51,7 +51,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('cos_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_cos_test', { x: toFelt(PI.times(x)) });
       const exp = Math.cos(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -61,7 +61,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -2.25, -2, -1.75, -1.25, -1, -0.75, -0.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('tan_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_tan_test', { x: toFelt(PI.times(x)) });
       const exp = Math.tan(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -71,7 +71,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ 0, 0.25, 0.75, 1, 1.25, 1.75, 2, 2.25 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('tan_fp_test', { x: toFelt(PI.times(x)) });
+      const { res } = await contract.call('Trig64x61_tan_test', { x: toFelt(PI.times(x)) });
       const exp = Math.tan(x * Math.PI);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -81,7 +81,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -1.5, -1 , -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('atan_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Trig64x61_atan_test', { x: to64x61(x) });
       const exp = Math.atan(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -91,7 +91,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -1 , -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('asin_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Trig64x61_asin_test', { x: to64x61(x) });
       const exp = Math.asin(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -101,7 +101,7 @@ describe('64.61 fixed point trigonometric functions', function () {
     const xs = [ -1 , -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1 ];
 
     for (const x of xs) {
-      const { res } = await contract.call('acos_fp_test', { x: to64x61(x) });
+      const { res } = await contract.call('Trig64x61_acos_test', { x: to64x61(x) });
       const exp = Math.acos(x);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
