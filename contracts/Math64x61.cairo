@@ -1,5 +1,6 @@
 %lang starknet
 
+from starkware.cairo.common.uint256 import Uint256
 from starkware.cairo.common.math_cmp import is_le, is_not_zero
 from starkware.cairo.common.pow import pow
 from starkware.cairo.common.math import (
@@ -19,20 +20,49 @@ const Math64x61_BOUND = 2 ** 125
 const Math64x61_ONE = 1 * Math64x61_FRACT_PART
 const Math64x61_E = 6267931151224907085
 
-func Math64x61_assert_64x61 {range_check_ptr} (x: felt):
+func Math64x61_assert64x61 {range_check_ptr} (x: felt):
     assert_le(x, Math64x61_BOUND)
     assert_le(-Math64x61_BOUND, x)
     return ()
 end
 
-func Math64x61_to64x61 {range_check_ptr} (x: felt) -> (res: felt):
+# Converts a fixed point value to a felt, truncating the fractional component
+func Math64x61_toFelt {range_check_ptr} (x: felt) -> (res: felt):
+    let (res, _) = signed_div_rem(x, Math64x61_FRACT_PART, Math64x61_BOUND)
+    return (res)
+end
+
+# Converts a felt to a fixed point value ensuring it will not overflow
+func Math64x61_fromFelt {range_check_ptr} (x: felt) -> (res: felt):
     assert_le(x, Math64x61_INT_PART)
     assert_le(-Math64x61_INT_PART, x)
     return (x * Math64x61_FRACT_PART)
 end
 
-func Math64x61_from64x61 {range_check_ptr} (x: felt) -> (res: felt):
-    let (res, _) = signed_div_rem(x, Math64x61_FRACT_PART, Math64x61_BOUND)
+# Converts a fixed point 64.61 value to a uint256 value
+func Math64x61_toUint256 (x: felt) -> (res: Uint256):
+    let res = Uint256(low = x, high = 0)
+    return (res)
+end
+
+# Converts a uint256 value into a fixed point 64.61 value ensuring it will not overflow
+func Math64x61_fromUint256 {range_check_ptr} (x: Uint256) -> (res: felt):
+    assert x.high = 0
+    let (res) = Math64x61_fromFelt(x.low)
+    return (res)
+end
+
+# Convenience addition method to assert no overflow before returning
+func Math64x61_add {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let res = x + y
+    Math64x61_assert64x61(res)
+    return (res)
+end
+
+# Convenience subtraction method to assert no overflow before returning
+func Math64x61_sub {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let res = x - y
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -40,7 +70,7 @@ end
 func Math64x61_mul {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     tempvar product = x * y
     let (res, _) = signed_div_rem(product, Math64x61_FRACT_PART, Math64x61_BOUND)
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -52,7 +82,7 @@ func Math64x61_div {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let (div_sign) = sign(y)
     tempvar product = x * Math64x61_FRACT_PART
     let (res_u, _) = signed_div_rem(product, div, Math64x61_BOUND)
-    Math64x61_assert_64x61(res_u)
+    Math64x61_assert64x61(res_u)
     return (res = res_u * div_sign)
 end
 
@@ -78,11 +108,11 @@ func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let (res_p) = Math64x61_mul(half_pow, half_pow)
 
     if rem == 0:
-        Math64x61_assert_64x61(res_p)
+        Math64x61_assert64x61(res_p)
         return (res_p)
     else:
         let (res) = Math64x61_mul(res_p, x)
-        Math64x61_assert_64x61(res)
+        Math64x61_assert64x61(res)
         return (res)
     end
 end
@@ -94,7 +124,7 @@ func Math64x61_sqrt {range_check_ptr} (x: felt) -> (res: felt):
     let (root) = sqrt(x)
     let (scale_root) = sqrt(Math64x61_FRACT_PART)
     let (res, _) = signed_div_rem(root * Math64x61_FRACT_PART, scale_root, Math64x61_BOUND)
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -112,7 +142,7 @@ func Math64x61__msb {range_check_ptr} (x: felt) -> (res: felt):
     let (div, _) = unsigned_div_rem(x, 2)
     let (rest) = Math64x61__msb(div)
     local res = 1 + rest
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -149,10 +179,10 @@ func Math64x61_exp2 {range_check_ptr} (x: felt) -> (res: felt):
     
     if exp_sign == -1:
         let (res_i) = Math64x61_div(Math64x61_ONE, res_u)
-        Math64x61_assert_64x61(res_i)
+        Math64x61_assert64x61(res_i)
         return (res_i)
     else:
-        Math64x61_assert_64x61(res_u)
+        Math64x61_assert64x61(res_u)
         return (res_u)
     end
 end
@@ -209,9 +239,9 @@ func Math64x61_log2 {range_check_ptr} (x: felt) -> (res: felt):
     let (r2) = Math64x61_mul(r3 + a2, norm)
     local norm_res = r2 + a1
 
-    let (int_part) = Math64x61_to64x61(b)
+    let (int_part) = Math64x61_fromFelt(b)
     local res = int_part + norm_res
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 

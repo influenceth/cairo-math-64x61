@@ -10,13 +10,16 @@ A signed 64.61-bit fixed point number is a fraction in which the numerator is a 
 Can represent values in the range of -2^64 to 2^64 with precision to 4.34e-19.
 
 ## Standard Library ##
-`Math64x61` includes implementation of `mul`, `div`, `sqrt`, `exp`, `ln`, `log2`, `log10`, and `pow` as well as conversion and assertion methods.
+`Math64x61` includes implementation of `add`, `sub`, `mul`, `div`, `sqrt`, `exp`, `ln`, `log2`, `log10`, and `pow` as well as conversion to / from felts and Uint256 values, and assertion methods.
 
 ## Trigonometry Library ##
 `Trig64x61` includes implementation of `sin`, `cos`, `tan` and their inverses.
 
 ## Hyperbolic Library ##
 `Hyp64x61` includes implementation of `sinh`, `cosh`, `tanh`, and their inverses.
+
+## Vector Library ##
+`Vec64x61` includes implementation of vector arithmetic (`add`, `sub`, `div`), dot product (`dot`), cross product (`cross`) and `norm`.
 
 ## Extensibility ##
 This library strives to adhere to the OpenZeppelin extensibility pattern: https://github.com/OpenZeppelin/cairo-contracts/blob/main/docs/Extensibility.md

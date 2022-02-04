@@ -8,7 +8,7 @@ from Math64x61 import (
     Math64x61_mul,
     Math64x61_div,
     Math64x61_sqrt,
-    Math64x61_assert_64x61
+    Math64x61_assert64x61
 )
 
 const Trig64x61_PI = 7244019458077122842
@@ -42,7 +42,7 @@ func Trig64x61_sin {range_check_ptr} (x: felt) -> (res: felt):
     let (acc) = Trig64x61__sin_loop(x2, 6, Math64x61_ONE)
     let (res2) = Math64x61_mul(x2, acc)
     local res = res2 * _sign1 * _sign2
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -115,7 +115,7 @@ func Trig64x61_atan {range_check_ptr} (x: felt) -> (res: felt):
     tempvar z2 = z1 + (pi_6 * _shift)
     tempvar z3 = (z2 - (Trig64x61_HALF_PI * _invert)) * (1 - _invert * 2)
     local res = z3 * _sign
-    Math64x61_assert_64x61(res)
+    Math64x61_assert64x61(res)
     return (res)
 end
 
@@ -151,7 +151,7 @@ func Trig64x61_acos {range_check_ptr} (x: felt) -> (res: felt):
 
     if _sign == -1:
         local res = Trig64x61_PI - res_u
-        Math64x61_assert_64x61(res)
+        Math64x61_assert64x61(res)
         return (res)
     else:
         return (res_u)
