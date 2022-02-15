@@ -66,9 +66,3 @@ func Math64x61_log10_test {range_check_ptr} (x: felt) -> (res: felt):
     let (res) = Math64x61_log10(x)
     return (res)
 end
-
-@view
-func Math64x61_pow_frac_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
-    let (res) = Math64x61_pow_frac(x, y)
-    return (res)
-end
