@@ -117,6 +117,19 @@ func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     end
 end
 
+# Calclates the value of x^y and checks for overflow before returning
+# uses x^y = exp(y*ln(x))
+# x is a 64x61 fixed point value x>0
+# y is a 64x61 fixed point value y>0
+func Math64x61_pow_frac {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    alloc_locals
+    let (ln_x) = Math64x61_ln(x)
+    let (y_ln_x) = Math64x61_mul(y,ln_x)
+    let (res) = Math64x61_exp(y_ln_x)
+    Math64x61_assert64x61(res)
+    return (res)
+end
+
 # Calculates the square root of a fixed point value
 # x must be positive
 func Math64x61_sqrt {range_check_ptr} (x: felt) -> (res: felt):
