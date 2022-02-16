@@ -67,6 +67,22 @@ describe('64.61 fixed point math', function () {
     }
   });
 
+  it('should return accurate results for powers', async () => {
+    const xs = [ 4, 4, 4, 1024, 2 ** 16 - 1 , 4 , 64, 0.5, 0.25, 0.125 ];
+    const ys = [ 0, 0.5, 0.25, 3, 3 , -2, -3, 0.5, 1, 1.5 ];
+
+    for (const [ i, x ] of xs.entries()) {
+      const y = ys[i];
+      const { res } = await contract.call('Math64x61_pow_frac_test', {
+        x: to64x61(x),
+        y: to64x61(y)
+      });
+
+      const exp = x ** y;
+      expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
+    }
+  });
+  
   it('should return accurate results for sqrt', async () => {
     const xs = [ 1, 64, 2 ** 32, 7.21 ** 2 ];
 
