@@ -1,7 +1,7 @@
 require('@shardlabs/starknet-hardhat-plugin');
 
 module.exports = {
-  cairo: {
+  starknet: {
     venv: 'active'
   },
   networks: {
