@@ -1,6 +1,11 @@
+[![npm version](https://badge.fury.io/js/@influenceth%2Fcairo-math-64x61.svg)](https://badge.fury.io/js/@influenceth%2Fcairo-math-64x61)
+
 # Cairo Math 64x61
 
 A fixed point 64.61 math library for Cairo & Starknet
+
+## Installation ##
+For use with `starknet-hardhat-plugin`, install via npm with `npm install --save-dev @influenceth/cairo-math-64x61` and add `./node_modules/@influenceth/cairo-math-64x61` to `cairoPaths` in your hardhat config (see https://github.com/Shard-Labs/starknet-hardhat-plugin#paths). Then you can import with, for example: `from contracts.Math64x61 import Math64x61_mul`
 
 ## Signed 64.61 Fixed Point Numbers ##
 A signed 64.61-bit fixed point number is a fraction in which the numerator is a signed 125-bit integer and the denominator is 2^61. Since the denominator stays the same there is no need to store it (as in a floating point value).
