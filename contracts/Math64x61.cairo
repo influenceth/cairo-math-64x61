@@ -52,6 +52,22 @@ func Math64x61_fromUint256 {range_check_ptr} (x: Uint256) -> (res: felt):
     return (res)
 end
 
+# Calculates the floor of a 64.61 value
+func Math64x61_floor {range_check_ptr} (x: felt) -> (res: felt):
+    let (int_val, mod_val) = signed_div_rem(x, Math64x61_ONE, Math64x61_BOUND)
+    let res = x - mod_val
+    Math64x61_assert64x61(res)
+    return (res)
+end
+
+# Calculates the ceiling of a 64.61 value
+func Math64x61_ceil {range_check_ptr} (x: felt) -> (res: felt):
+    let (int_val, mod_val) = signed_div_rem(x, Math64x61_ONE, Math64x61_BOUND)
+    let res = (int_val + 1) * Math64x61_ONE
+    Math64x61_assert64x61(res)
+    return (res)
+end
+
 # Convenience addition method to assert no overflow before returning
 func Math64x61_add {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let res = x + y
@@ -89,7 +105,7 @@ end
 # Calclates the value of x^y and checks for overflow before returning
 # x is a 64x61 fixed point value
 # y is a standard felt (int)
-func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+func Math64x61__pow_int {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     alloc_locals
     let (exp_sign) = sign(y)
     let (exp_val) = abs_value(y)
@@ -99,12 +115,12 @@ func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     end
 
     if exp_sign == -1:
-        let (num) = Math64x61_pow(x, exp_val)
+        let (num) = Math64x61__pow_int(x, exp_val)
         return Math64x61_div(Math64x61_ONE, num)
     end
 
     let (half_exp, rem) = unsigned_div_rem(exp_val, 2)
-    let (half_pow) = Math64x61_pow(x, half_exp)
+    let (half_pow) = Math64x61__pow_int(x, half_exp)
     let (res_p) = Math64x61_mul(half_pow, half_pow)
 
     if rem == 0:
@@ -115,6 +131,27 @@ func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
         Math64x61_assert64x61(res)
         return (res)
     end
+end
+
+# Calclates the value of x^y and checks for overflow before returning
+# x is a 64x61 fixed point value
+# y is a 64x61 fixed point value
+func Math64x61_pow {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    alloc_locals
+    let (y_int, y_frac) = signed_div_rem(y, Math64x61_ONE, Math64x61_BOUND)
+
+    # use the more performant integer pow when y is an int
+    if y_frac == 0:
+        return Math64x61__pow_int(x, y_int)
+    end
+
+    # x^y = exp(y*ln(x)) for x > 0 (will error for x < 0
+    let (ln_x) = Math64x61_ln(x)
+    let (y_ln_x) = Math64x61_mul(y,ln_x)
+    let (res) = Math64x61_exp(y_ln_x)
+    return (res)
+    # Math64x61_assert64x61(res)
+    # return (res)
 end
 
 # Calculates the square root of a fixed point value
@@ -158,7 +195,7 @@ func Math64x61_exp2 {range_check_ptr} (x: felt) -> (res: felt):
 
     let (exp_value) = abs_value(x)
     let (int_part, frac_part) = unsigned_div_rem(exp_value, Math64x61_FRACT_PART)
-    let (int_res) = Math64x61_pow(2 * Math64x61_ONE, int_part)
+    let (int_res) = Math64x61__pow_int(2 * Math64x61_ONE, int_part)
 
     # 1.069e-7 maximum error
     const a1 = 2305842762765193127
