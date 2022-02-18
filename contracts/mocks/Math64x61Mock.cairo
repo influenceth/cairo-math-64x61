@@ -1,6 +1,8 @@
 %lang starknet
 
 from Math64x61 import (
+    Math64x61_floor,
+    Math64x61_ceil,
     Math64x61_mul,
     Math64x61_div,
     Math64x61_pow,
@@ -11,6 +13,18 @@ from Math64x61 import (
     Math64x61_ln,
     Math64x61_log10
 )
+
+@view
+func Math64x61_floor_test {range_check_ptr} (x: felt) -> (res: felt):
+    let (res) = Math64x61_floor(x)
+    return (res)
+end
+
+@view
+func Math64x61_ceil_test {range_check_ptr} (x: felt) -> (res: felt):
+    let (res) = Math64x61_ceil(x)
+    return (res)
+end
 
 @view
 func Math64x61_mul_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
@@ -27,12 +41,6 @@ end
 @view
 func Math64x61_pow_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let (res) = Math64x61_pow(x, y)
-    return (res)
-end
-
-@view
-func Math64x61_pow_frac_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
-    let (res) = Math64x61_pow_frac(x, y)
     return (res)
 end
 

@@ -17,6 +17,28 @@ describe('64.61 fixed point math', function () {
     contract = await contractFactory.deploy();
   });
 
+  it('should return accurate results for floor', async () => {
+    const count = 10;
+    const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const x of xs) {
+      const { res } = await contract.call('Math64x61_floor_test', { x: to64x61(x) });
+      const exp = Math.floor(x);
+      expect(from64x61(res)).to.eq(exp);
+    }
+  });
+
+  it('should return accurate results for ceiling', async () => {
+    const count = 10;
+    const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const x of xs) {
+      const { res } = await contract.call('Math64x61_ceil_test', { x: to64x61(x) });
+      const exp = Math.ceil(x);
+      expect(from64x61(res)).to.eq(exp);
+    }
+  });
+
   it('should return accurate results for multiplication', async () => {
     const count = 10;
     const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
@@ -52,28 +74,12 @@ describe('64.61 fixed point math', function () {
   });
 
   it('should return accurate results for powers', async () => {
-    const xs = [ 4, 4, 4, 1024, 2 ** 16 - 1 , 4 , 64, -10, -10, -10 ];
-    const ys = [ 0, 1, 2, 3, 3 , -2, -3, 1, 2, 3 ];
+    const xs = [ 4, 4, 4 , 1024, 2 ** 16 - 1 , 4 , 64, -10, -10, -10, 0.5, 0.25, 0.125 ];
+    const ys = [ 0, 1, 2 , 3, 3 , -2, -3, 1, 2, 3, 0.5, 1, 1.5 ];
 
     for (const [ i, x ] of xs.entries()) {
       const y = ys[i];
       const { res } = await contract.call('Math64x61_pow_test', {
-        x: to64x61(x),
-        y: toFelt(y)
-      });
-
-      const exp = x ** y;
-      expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
-    }
-  });
-
-  it('should return accurate results for powers', async () => {
-    const xs = [ 4, 4, 4, 1024, 2 ** 16 - 1 , 4 , 64, 0.5, 0.25, 0.125 ];
-    const ys = [ 0, 0.5, 0.25, 3, 3 , -2, -3, 0.5, 1, 1.5 ];
-
-    for (const [ i, x ] of xs.entries()) {
-      const y = ys[i];
-      const { res } = await contract.call('Math64x61_pow_frac_test', {
         x: to64x61(x),
         y: to64x61(y)
       });
