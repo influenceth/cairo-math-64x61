@@ -39,6 +39,32 @@ describe('64.61 fixed point math', function () {
     }
   });
 
+  it('should return accurate results for min', async () => {
+    const count = 10;
+    const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+    const ys = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const [ i, x ] of xs.entries()) {
+      const y = ys[i];
+      const { res } = await contract.call('Math64x61_min_test', { x: to64x61(x), y: to64x61(y) });
+      const exp = Math.min(x, y);
+      expect(from64x61(res)).to.eq(exp);
+    }
+  });
+
+  it('should return accurate results for max', async () => {
+    const count = 10;
+    const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+    const ys = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const [ i, x ] of xs.entries()) {
+      const y = ys[i];
+      const { res } = await contract.call('Math64x61_max_test', { x: to64x61(x), y: to64x61(y) });
+      const exp = Math.max(x, y);
+      expect(from64x61(res)).to.eq(exp);
+    }
+  });
+
   it('should return accurate results for multiplication', async () => {
     const count = 10;
     const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);

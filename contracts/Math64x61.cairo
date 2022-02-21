@@ -68,6 +68,28 @@ func Math64x61_ceil {range_check_ptr} (x: felt) -> (res: felt):
     return (res)
 end
 
+# Returns the minimum of two values
+func Math64x61_min {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let (x_le) = is_le(x, y)
+
+    if x_le == 1:
+        return (x)
+    else:
+        return (y)
+    end
+end
+
+# Returns the maximum of two values
+func Math64x61_max {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let (x_le) = is_le(x, y)
+
+    if x_le == 1:
+        return (y)
+    else:
+        return (x)
+    end
+end
+
 # Convenience addition method to assert no overflow before returning
 func Math64x61_add {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let res = x + y

@@ -3,6 +3,8 @@
 from Math64x61 import (
     Math64x61_floor,
     Math64x61_ceil,
+    Math64x61_min,
+    Math64x61_max,
     Math64x61_mul,
     Math64x61_div,
     Math64x61_pow,
@@ -23,6 +25,18 @@ end
 @view
 func Math64x61_ceil_test {range_check_ptr} (x: felt) -> (res: felt):
     let (res) = Math64x61_ceil(x)
+    return (res)
+end
+
+@view
+func Math64x61_min_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let (res) = Math64x61_min(x, y)
+    return (res)
+end
+
+@view
+func Math64x61_max_test {range_check_ptr} (x: felt, y: felt) -> (res: felt):
+    let (res) = Math64x61_max(x, y)
     return (res)
 end
 

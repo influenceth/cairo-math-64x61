@@ -15,7 +15,7 @@ A signed 64.61-bit fixed point number is a fraction in which the numerator is a 
 Can represent values in the range of -2^64 to 2^64 with precision to 4.34e-19.
 
 ## Standard Library ##
-`Math64x61` includes implementation of `add`, `sub`, `mul`, `div`, `sqrt`, `exp`, `ln`, `log2`, `log10`, and `pow` as well as conversion to / from felts and Uint256 values, `floor`, `ceil` and assertion methods.
+`Math64x61` includes implementation of `add`, `sub`, `mul`, `div`, `sqrt`, `exp`, `ln`, `log2`, `log10`, and `pow` as well as conversion to / from felts and Uint256 values, `floor`, `ceil`, `min`, `max` and assertion methods.
 
 ## Trigonometry Library ##
 `Trig64x61` includes implementation of `sin`, `cos`, `tan` and their inverses.
