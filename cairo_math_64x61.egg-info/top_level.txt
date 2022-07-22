@@ -1,5 +1,6 @@
-.python-version
+cache
+contracts
+dist
 node_modules
 starknet-artifacts
-cache
-dist
+test
