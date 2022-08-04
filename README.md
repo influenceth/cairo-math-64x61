@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/@influenceth%2Fcairo-math-64x61.svg)](https://badge.fury.io/js/@influenceth%2Fcairo-math-64x61)
+[![PyPI version](https://badge.fury.io/py/cairo_math_64x61.svg)](https://badge.fury.io/py/cairo_math_64x61)
 
 # Cairo Math 64x61
 
