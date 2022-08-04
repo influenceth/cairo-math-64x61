@@ -1,6 +1,0 @@
-cache
-contracts
-dist
-node_modules
-starknet-artifacts
-test
