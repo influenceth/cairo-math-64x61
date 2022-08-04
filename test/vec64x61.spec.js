@@ -21,7 +21,7 @@ describe('64.61 vector math functions', function () {
   let contract;
 
   before(async () => {
-    const contractFactory = await starknet.getContractFactory('Vec64x61Mock');
+    const contractFactory = await starknet.getContractFactory('cairo_math_64x61/vec64x61_mock');
     contract = await contractFactory.deploy();
   });
 
@@ -32,7 +32,7 @@ describe('64.61 vector math functions', function () {
 
     for (const [ i, a ] of as.entries()) {
       const { res } = await contract.call(
-        'Vec64x61_add_test',
+        'vec64x61_add_test',
         { a: a.map((v) => to64x61(v)), b: bs[i].map((v) => to64x61(v)) }
       );
 
@@ -50,7 +50,7 @@ describe('64.61 vector math functions', function () {
 
     for (const [ i, a ] of as.entries()) {
       const { res } = await contract.call(
-        'Vec64x61_sub_test',
+        'vec64x61_sub_test',
         { a: a.map((v) => to64x61(v)), b: bs[i].map((v) => to64x61(v)) }
       );
 
@@ -68,7 +68,7 @@ describe('64.61 vector math functions', function () {
 
     for (const [ i, a ] of as.entries()) {
       const { res } = await contract.call(
-        'Vec64x61_mul_test',
+        'vec64x61_mul_test',
         { a: a.map((v) => to64x61(v)), b: to64x61(bs[i]) }
       );
 
@@ -86,7 +86,7 @@ describe('64.61 vector math functions', function () {
 
     for (const [ i, a ] of as.entries()) {
       const { res } = await contract.call(
-        'Vec64x61_dot_test',
+        'vec64x61_dot_test',
         { a: a.map((v) => to64x61(v)), b: bs[i].map((v) => to64x61(v)) }
       );
 
@@ -102,7 +102,7 @@ describe('64.61 vector math functions', function () {
 
     for (const [ i, a ] of as.entries()) {
       const { res } = await contract.call(
-        'Vec64x61_cross_test',
+        'vec64x61_cross_test',
         { a: a.map((v) => to64x61(v)), b: bs[i].map((v) => to64x61(v)) }
       );
 
@@ -119,7 +119,7 @@ describe('64.61 vector math functions', function () {
     const as = Array.from({ length: count }, () => randVec3(-(2 ** 32), 2 ** 32))
 
     for (let a of as) {
-      const { res } = await contract.call('Vec64x61_norm_test', { a: a.map((v) => to64x61(v)) });
+      const { res } = await contract.call('vec64x61_norm_test', { a: a.map((v) => to64x61(v)) });
       const exp = Math.hypot(...a);
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }

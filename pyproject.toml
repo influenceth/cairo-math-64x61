@@ -1,0 +1,30 @@
+[project]
+name = "cairo_math_64x61"
+version = "1.3.0"
+authors = [
+  { name="Unstoppable Games, Inc.", email="info@unstoppablegames.io" },
+]
+description = "Fixed point 64.61 math library for Cairo / Starknet"
+license = { file="LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/influenceth/cairo-math-64x61"
+"Bug Tracker" = "https://github.com/influenceth/cairo-math-64x61/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = [ "contracts" ]
+include = [ "cairo_math_64x61" ]
+
+[tool.setuptools.package-data]
+cairo_math_64x61 = [ "*.cairo" ]

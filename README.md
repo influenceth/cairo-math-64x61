@@ -5,7 +5,7 @@
 A fixed point 64.61 math library for Cairo & Starknet
 
 ## Usage ##
-For use with `starknet-hardhat-plugin`, install via npm with `npm install --save-dev @influenceth/cairo-math-64x61` and add `./node_modules/@influenceth/cairo-math-64x61` to `cairoPaths` in your hardhat config (see https://github.com/Shard-Labs/starknet-hardhat-plugin#paths). Then you can import with, for example: `from contracts.Math64x61 import Math64x61_mul`
+Install with `pip install cairo_math_64x61` and import and use with `from cairo_math_64x61.math64x61 import Math64x61`. Previous installation as an npm module has been deprecated, the last available npm module is `v1.2.0`.
 
 ## Signed 64.61 Fixed Point Numbers ##
 A signed 64.61-bit fixed point number is a fraction in which the numerator is a signed 125-bit integer and the denominator is 2^61. Since the denominator stays the same there is no need to store it (as in a floating point value).
@@ -27,4 +27,4 @@ Can represent values in the range of -2^64 to 2^64 with precision to 4.34e-19.
 `Vec64x61` includes implementation of vector arithmetic (`add`, `sub`, `div`), dot product (`dot`), cross product (`cross`) and `norm`.
 
 ## Extensibility ##
-This library strives to adhere to the OpenZeppelin extensibility pattern: https://github.com/OpenZeppelin/cairo-contracts/blob/main/docs/Extensibility.md
+This library strives to adhere to the OpenZeppelin extensibility pattern: https://docs.openzeppelin.com/contracts-cairo/0.2.1/extensibility#libraries
