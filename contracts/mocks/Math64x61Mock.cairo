@@ -13,7 +13,8 @@ from Math64x61 import (
     Math64x61_exp,
     Math64x61_log2,
     Math64x61_ln,
-    Math64x61_log10
+    Math64x61_log10,
+    Math64x61_10xN_to_64x61
 )
 
 @view
@@ -92,5 +93,11 @@ end
 @view
 func Math64x61_log10_test {range_check_ptr} (x: felt) -> (res: felt):
     let (res) = Math64x61_log10(x)
+    return (res)
+end
+
+@view
+func Math64x61_10xN_to_64x61_test {range_check_ptr} (x: felt, decimals: felt) -> (res: felt):
+    let (res) = Math64x61_10xN_to_64x61(x, decimals)
     return (res)
 end
