@@ -3,6 +3,7 @@
 from starkware.cairo.common.uint256 import Uint256
 from starkware.cairo.common.math_cmp import is_le, is_not_zero
 from starkware.cairo.common.pow import pow
+from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.math import (
     assert_le,
     assert_lt,
@@ -49,6 +50,37 @@ end
 func Math64x61_fromUint256 {range_check_ptr} (x: Uint256) -> (res: felt):
     assert x.high = 0
     let (res) = Math64x61_fromFelt(x.low)
+    return (res)
+end
+
+# Converts numbers multiplied by 10*n (such as prices from oracles)
+# to  the Math64x61 format
+# Input: Number multipled by 10**decimals, decimals
+func Math64x61_10xN_to_64x61{range_check_ptr}(price : felt, decimals : felt) -> (price : felt):
+    alloc_locals
+    let (is_convertable) = is_le(price, Math64x61_INT_PART)
+
+    if is_convertable == TRUE:
+        let (converted_price) = Math64x61_fromFelt(price)
+        let (pow10xM) = pow(10, decimals)
+        let (pow10xM_to_64x61) = Math64x61_fromFelt(pow10xM)
+        let (price_64x61) = Math64x61_div_imprecise(converted_price, pow10xM_to_64x61)
+        return (price_64x61)
+    end
+
+    let (decimals_1, r) = unsigned_div_rem(decimals, 2)
+    let decimals_2 = decimals - decimals_1
+
+    let (pow_10_m1) = pow(10, decimals_1)
+    let (c, remainder) = unsigned_div_rem(price, pow_10_m1)
+
+    let (a) = Math64x61_10xN_to_64x61(c, decimals_2)
+    let (b) = Math64x61_10xN_to_64x61(remainder, decimals)
+
+    let (res) = Math64x61_add(a, b)
+
+    # Outputs number multiplied by 2**61 which might be
+    # slightly imprecise due to imprecise devision, however tests are run to assert 5e-7 precision
     return (res)
 end
 
@@ -122,6 +154,31 @@ func Math64x61_div {range_check_ptr} (x: felt, y: felt) -> (res: felt):
     let (res_u, _) = signed_div_rem(product, div, Math64x61_BOUND)
     Math64x61_assert64x61(res_u)
     return (res = res_u * div_sign)
+end
+
+# Function for iterative division, which can prevent weird errors in overflow,
+# granted it may introduce an imprecision to the result.
+func Math64x61_div_imprecise{range_check_ptr}(x : felt, y : felt) -> (res : felt):
+    # both x and y are Math64x61
+    alloc_locals
+    # check whether the number is small enough to
+    # be divisible without causing error
+    let (pow_10_to_30) = pow(10, 30)
+    let (is_convertable) = is_le(y, pow_10_to_30)
+    if is_convertable == TRUE:
+        let (res_a) = Math64x61_div(x, y)
+        return (res_a)
+    end
+
+    # div a and b calculated differently due to imprecision
+    let (div_a) = Math64x61_sqrt(y)
+    let (div_b) = Math64x61_div(y, div_a)
+
+    # x / y = x / ( sqrt(y) * sqrt(y) )
+    let (partial_res) = Math64x61_div_imprecise(x, div_a)
+    let (res) = Math64x61_div_imprecise(partial_res, div_b)
+
+    return (res)
 end
 
 # Calclates the value of x^y and checks for overflow before returning
