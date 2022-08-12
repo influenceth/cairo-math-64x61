@@ -1,7 +1,6 @@
 from starkware.cairo.common.uint256 import Uint256
 from starkware.cairo.common.math_cmp import is_le, is_not_zero
 from starkware.cairo.common.pow import pow as pow_int
-from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.math import (
     assert_le,
     assert_lt,
@@ -57,9 +56,9 @@ namespace Math64x61:
         alloc_locals
         let (is_convertable) = is_le(price, INT_PART)
 
-        if is_convertable == TRUE:
+        if is_convertable == 1:
             let (converted_price) = fromFelt(price)
-            let (pow10xM) = pow(10, decimals)
+            let (pow10xM) = pow_int(10, decimals)
             let (pow10xM_to_64x61) = fromFelt(pow10xM)
             let (price_64x61) = divImprecise(converted_price, pow10xM_to_64x61)
             return (price_64x61)
@@ -68,7 +67,7 @@ namespace Math64x61:
         let (decimals_1, r) = unsigned_div_rem(decimals, 2)
         let decimals_2 = decimals - decimals_1
 
-        let (pow_10_m1) = pow(10, decimals_1)
+        let (pow_10_m1) = pow_int(10, decimals_1)
         let (c, remainder) = unsigned_div_rem(price, pow_10_m1)
 
         let (a) = fromOracles(c, decimals_2)
@@ -159,9 +158,9 @@ namespace Math64x61:
     func divImprecise{range_check_ptr}(x : felt, y : felt) -> (res : felt):
         alloc_locals
 
-        let (pow_10_to_30) = pow(10, 30)
+        let (pow_10_to_30) = pow_int(10, 30)
         let (is_convertable) = is_le(y, pow_10_to_30)
-        if is_convertable == TRUE:
+        if is_convertable == 1:
             let (res_a) = div(x, y)
             return (res_a)
         end
