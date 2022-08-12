@@ -177,7 +177,7 @@ describe('64.61 fixed point math', function () {
         );
 
         const exp = Math.trunc(x * Math.pow(2, 61));
-        expect(from64x61(res)).to.be.closeTo(x, ABS_TOL);
+        expect(from64x61(res)).to.be.closeTo(x, 5e-15);
       }
     }
 
