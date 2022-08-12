@@ -80,3 +80,9 @@ func math64x61_log10_test {range_check_ptr} (x: felt) -> (res: felt):
     let (res) = Math64x61.log10(x)
     return (res)
 end
+
+@view
+func math64x61_fromOracles_test {range_check_ptr} (x: felt, decimals: felt) -> (res: felt):
+    let (res) = Math64x61.fromOracles(x, decimals)
+    return (res)
+end

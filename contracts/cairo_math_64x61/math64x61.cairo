@@ -51,6 +51,36 @@ namespace Math64x61:
         return (res)
     end
 
+    # Converts numbers multiplied by 10**n to Math64x61 format which are often returned by oracles
+    func fromOracles{range_check_ptr}(price : felt, decimals : felt) -> (price : felt):
+        alloc_locals
+        let (is_convertable) = is_le(price, INT_PART)
+
+        if is_convertable == 1:
+            let (converted_price) = fromFelt(price)
+            let (pow10xM) = pow_int(10, decimals)
+            let (pow10xM_to_64x61) = fromFelt(pow10xM)
+            let (price_64x61) = divImprecise(converted_price, pow10xM_to_64x61)
+            return (price_64x61)
+        end
+
+        let (decimals_1, r) = unsigned_div_rem(decimals, 2)
+        let decimals_2 = decimals - decimals_1
+
+        let (pow_10_m1) = pow_int(10, decimals_1)
+        let (c, remainder) = unsigned_div_rem(price, pow_10_m1)
+
+        let (a) = fromOracles(c, decimals_2)
+        let (b) = fromOracles(remainder, decimals)
+
+        let (res) = add(a, b)
+
+        # Outputs number in 64x61 format which might be
+        # slightly imprecise due to imprecise division,
+        # however tests are run to assert 5e-7 precision
+        return (res)
+    end
+
     # Calculates the floor of a 64.61 value
     func floor {range_check_ptr} (x: felt) -> (res: felt):
         let (int_val, mod_val) = signed_div_rem(x, ONE, BOUND)
@@ -121,6 +151,29 @@ namespace Math64x61:
         let (res_u, _) = signed_div_rem(product, div, BOUND)
         assert64x61(res_u)
         return (res = res_u * div_sign)
+    end
+
+    # Function for iterative division, which can prevent weird errors in overflow,
+    # granted it may introduce an imprecision to the result.
+    func divImprecise{range_check_ptr}(x : felt, y : felt) -> (res : felt):
+        alloc_locals
+
+        let (pow_10_to_30) = pow_int(10, 30)
+        let (is_convertable) = is_le(y, pow_10_to_30)
+        if is_convertable == 1:
+            let (res_a) = div(x, y)
+            return (res_a)
+        end
+
+        # div a and b calculated differently due to imprecision
+        let (div_a) = sqrt(y)
+        let (div_b) = div(y, div_a)
+
+        # x / y = x / ( sqrt(y) * sqrt(y) )
+        let (partial_res) = divImprecise(x, div_a)
+        let (res) = divImprecise(partial_res, div_b)
+
+        return (res)
     end
 
     # Calclates the value of x^y and checks for overflow before returning

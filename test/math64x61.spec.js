@@ -76,7 +76,7 @@ describe('64.61 fixed point math', function () {
         x: to64x61(x),
         y: to64x61(y)
       });
-      
+
       const exp = x * y;
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -93,7 +93,7 @@ describe('64.61 fixed point math', function () {
         x: to64x61(x),
         y: to64x61(y)
       });
-      
+
       const exp = x / y;
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -114,7 +114,7 @@ describe('64.61 fixed point math', function () {
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
   });
-  
+
   it('should return accurate results for sqrt', async () => {
     const xs = [ 1, 64, 2 ** 32, 7.21 ** 2 ];
 
@@ -134,7 +134,7 @@ describe('64.61 fixed point math', function () {
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
   });
-  
+
   it('should return accurate results for binary log', async () => {
     const xs = [ 0.5, 0.75, 1, 2, 5, 72.11 ];
 
@@ -164,4 +164,23 @@ describe('64.61 fixed point math', function () {
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
   });
+
+  it('should return accurate results for converting price', async () => {
+    const xs = [0.00123, 0.561, 1.58, 10.84, 153.10, 1571.11, 23560.33, 101542.73, 1723561.14];
+    const decimals = [5, 7, 10, 12, 15, 18]
+
+    for (const decimal of decimals){
+      for (const x of xs) {
+        const { res } = await contract.call(
+          'math64x61_fromOracles_test',
+          { x: toFelt(x * Math.pow(10, decimal)), decimals: decimal }
+        );
+
+        const exp = Math.trunc(x * Math.pow(2, 61));
+        expect(from64x61(res)).to.be.closeTo(x, 5e-15);
+      }
+    }
+
+  });
+
 });
