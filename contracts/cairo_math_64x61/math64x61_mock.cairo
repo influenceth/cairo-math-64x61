@@ -7,7 +7,7 @@ from cairo_math_64x61.math64x61 import Math64x61
 @view
 func math64x61_toUint256_test{range_check_ptr}(x:felt) -> (res: Uint256) {
   let res = Math64x61.toUint256(x);
-  return (res = res);
+  return (res,);
 }
 
 @view
@@ -43,7 +43,7 @@ func math64x61_div_test{range_check_ptr}(x: felt, y: felt) -> (res: felt) {
 @view
 func math64x61_pow_test{range_check_ptr}(x: felt, y: felt) -> (res: felt) {
   let res = Math64x61.pow(x, y);
-  return (res = res);
+  return (res,);
 }
 
 @view
@@ -54,30 +54,30 @@ func math64x61_sqrt_test{range_check_ptr}(x: felt) -> (res: felt) {
 @view
 func math64x61_exp2_test{range_check_ptr}(x: felt) -> (res: felt) {
   let res = Math64x61.exp2(x);
-  return (res = res);
+  return (res,);
 }
 
 // Calculates the natural exponent of x: e^x
 @view
 func math64x61_exp_test{range_check_ptr}(x: felt) -> (res: felt) {
   let res = Math64x61.exp(x);
-  return (res = res);
+  return (res,);
 }
 
 @view
 func math64x61_log2_test{range_check_ptr}(x: felt) -> (res: felt) {
   let res = Math64x61.log2(x);
-  return (res = res);
+  return (res,);
 }
 
 @view
 func math64x61_ln_test{range_check_ptr}(x: felt) -> (res: felt) {
   let res = Math64x61.ln(x);
-  return (res = res);
+  return (res,);
 }
 
 @view
 func math64x61_log10_test{range_check_ptr}(x: felt) -> (res: felt) {
   let res = Math64x61.log10(x);
-  return (res = res);
+  return (res,);
 }
