@@ -17,6 +17,13 @@ describe('64.61 fixed point math', function () {
     contract = await contractFactory.deploy();
   });
 
+  it('should convert a felt to uint256', async () => {
+    const x = 753.24;
+    const { res } = await contract.call('math64x61_toUint256_test', { x: to64x61(x) });
+    const expected = { low: to64x61(x), high: 0n };
+    expect(res).to.eql(expected);
+  });
+
   it('should return accurate results for floor', async () => {
     const count = 10;
     const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
@@ -76,7 +83,7 @@ describe('64.61 fixed point math', function () {
         x: to64x61(x),
         y: to64x61(y)
       });
-      
+
       const exp = x * y;
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -93,7 +100,7 @@ describe('64.61 fixed point math', function () {
         x: to64x61(x),
         y: to64x61(y)
       });
-      
+
       const exp = x / y;
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
@@ -114,7 +121,7 @@ describe('64.61 fixed point math', function () {
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
   });
-  
+
   it('should return accurate results for sqrt', async () => {
     const xs = [ 1, 64, 2 ** 32, 7.21 ** 2 ];
 
@@ -134,7 +141,7 @@ describe('64.61 fixed point math', function () {
       expect(almost(from64x61(res), exp, ABS_TOL, REL_TOL), `${from64x61(res)} != ${exp}`).to.be.true;
     }
   });
-  
+
   it('should return accurate results for binary log', async () => {
     const xs = [ 0.5, 0.75, 1, 2, 5, 72.11 ];
 
