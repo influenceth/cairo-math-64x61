@@ -1,6 +1,6 @@
 [project]
 name = "cairo_math_64x61"
-version = "1.3.0"
+version = "2.0.0"
 authors = [
   { name="Unstoppable Games, Inc.", email="info@unstoppablegames.io" },
 ]
