@@ -3,12 +3,14 @@ require('@shardlabs/starknet-hardhat-plugin');
 module.exports = {
   starknet: {
     venv: 'active',
-    starknetNetwork: 'starknetLocal'
+    starknetNetwork: 'integratedDevnet'
   },
   networks: {
-    starknetLocal: {
-      url: 'http://localhost:5000'
-    }
+    integratedDevnet: {
+      url: "http://127.0.0.1:5050",
+      dockerizedVersion: "0.3.0",
+      args: [ "--lite-mode" ]
+    },
   },
   solidity: '0.7.3',
 };
