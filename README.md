@@ -2,10 +2,10 @@
 
 # Cairo Math 64x61
 
-A fixed point 64.61 math library for Cairo & Starknet
+A fixed point 64.61 math library for Cairo & Starknet.
 
 ## Usage ##
-Install with `pip install cairo_math_64x61` and import and use with `from cairo_math_64x61.math64x61 import Math64x61`. Previous installation as an npm module has been deprecated, the last available npm module is `v1.2.0`.
+Install with `pip install cairo_math_64x61` and import and use with `from cairo_math_64x61.math64x61 import Math64x61`. Previous installation as an npm module has been deprecated, the last available npm module is `v1.2.0`. Starting with `v2.0.0` the library utilizes Cairo 0.10 syntax and simplifies return values from objects to simple felts wherever possible.
 
 ## Signed 64.61 Fixed Point Numbers ##
 A signed 64.61-bit fixed point number is a fraction in which the numerator is a signed 125-bit integer and the denominator is 2^61. Since the denominator stays the same there is no need to store it (as in a floating point value).
@@ -25,6 +25,3 @@ Can represent values in the range of -2^64 to 2^64 with precision to 4.34e-19.
 
 ## Vector Library ##
 `Vec64x61` includes implementation of vector arithmetic (`add`, `sub`, `div`), dot product (`dot`), cross product (`cross`) and `norm`.
-
-## Extensibility ##
-This library strives to adhere to the OpenZeppelin extensibility pattern: https://docs.openzeppelin.com/contracts-cairo/0.2.1/extensibility#libraries
