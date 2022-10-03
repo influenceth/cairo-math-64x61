@@ -46,6 +46,17 @@ describe('64.61 fixed point math', function () {
     }
   });
 
+  it('should return accurate results for rounding', async () => {
+    const count = 10;
+    const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const x of xs) {
+      const { res } = await contract.call('math64x61_round_test', { x: to64x61(x) });
+      const exp = Math.round(x);
+      expect(from64x61(res)).to.eq(exp);
+    }
+  });
+
   it('should return accurate results for min', async () => {
     const count = 10;
     const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);

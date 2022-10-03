@@ -27,6 +27,14 @@ func vec64x61_mul_test{range_check_ptr}(a: (felt, felt, felt), b: felt) -> (
 }
 
 @view
+func vec64x61_div_test{range_check_ptr}(a: (felt, felt, felt), b: felt) -> (
+    res: (felt, felt, felt)
+  ) {
+  let res = Vec64x61.div(a, b);
+  return (res,);
+}
+
+@view
 func vec64x61_dot_test{range_check_ptr}(a: (felt, felt, felt), b: (felt, felt, felt)) -> (
     res: felt
   ) {

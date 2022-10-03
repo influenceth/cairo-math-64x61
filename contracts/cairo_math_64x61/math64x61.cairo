@@ -67,6 +67,19 @@ namespace Math64x61 {
     return res;
   }
 
+  // Rounds a 64.61 value to the nearest integer
+  func round{range_check_ptr}(x: felt) -> felt {
+    alloc_locals;
+    let round_sign = sign(x);
+    let round_val = abs_value(x);
+    let (int_val, mod_val) = signed_div_rem(round_val, ONE, BOUND);
+    let half = 2 ** 60;
+    let addend = is_le(half, mod_val);
+    let res = round_sign * (int_val + addend) * ONE;
+    assert64x61(res);
+    return res;
+  }
+
   // Returns the minimum of two values
   func min{range_check_ptr}(x: felt, y: felt) -> felt {
     let x_le = is_le(x, y);
