@@ -21,6 +21,12 @@ func math64x61_ceil_test{range_check_ptr}(x: felt) -> (res: felt) {
 }
 
 @view
+func math64x61_round_test{range_check_ptr}(x: felt) -> (res: felt) {
+  let res = Math64x61.round(x);
+  return (res = res);
+}
+
+@view
 func math64x61_min_test{range_check_ptr}(x: felt, y: felt) -> (res: felt) {
   return (res = Math64x61.min(x, y));
 }

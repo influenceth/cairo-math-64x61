@@ -1,10 +1,17 @@
 {
   "name": "@influenceth/cairo-math-64x61",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Fixed point 64.61 math library for Cairo / Starknet",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/influenceth/cairo-math-64x61.git"
+  },
+  "scripts": {
+    "compile": "npx hardhat starknet-compile ./contracts/cairo_math_64x61/*.cairo",
+    "release": "python3.9 -m twine upload dist/*",
+    "build": "python3.9 -m build",
+    "postinstall": "pip install -r requirements.txt",
+    "test": "npx hardhat test --starknet-network integratedDevnet"
   },
   "author": "Unstoppable Games, Inc.",
   "license": "MIT",

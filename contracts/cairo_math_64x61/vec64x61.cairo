@@ -25,6 +25,14 @@ namespace Vec64x61 {
     return (x, y, z);
   }
 
+  // Calculates the scalar division of a 3D vector and a fixed point value
+  func div{range_check_ptr}(a: (felt, felt, felt), b: felt) -> (felt, felt, felt) {
+    let x = Math64x61.div(a[0], b);
+    let y = Math64x61.div(a[1], b);
+    let z = Math64x61.div(a[2], b);
+    return (x, y, z);
+  }
+
   // Calculates the dot product of two 3D vectors
   func dot{range_check_ptr}(a: (felt, felt, felt), b: (felt, felt, felt)) -> felt {
     let x = Math64x61.mul(a[0], b[0]);

@@ -79,6 +79,24 @@ describe('64.61 vector math functions', function () {
     }
   });
 
+  it('should return accurate results for vector scalar division', async () => {
+    const count = 10;
+    const as = Array.from({ length: count }, () => randVec3(-(2 ** 32), 2 ** 32))
+    const bs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+
+    for (const [ i, a ] of as.entries()) {
+      const { res } = await contract.call(
+        'vec64x61_div_test',
+        { a: a.map((v) => to64x61(v)), b: to64x61(bs[i]) }
+      );
+
+      for (const [ j, v ] of a.entries()) {
+        const exp = v / bs[i];
+        expect(almost(from64x61(res[j]), exp, ABS_TOL, REL_TOL), `${from64x61(res[j])} != ${exp}`).to.be.true;
+      }
+    }
+  });
+
   it('should return accurate results for vector dot product', async () => {
     const count = 10;
     const as = Array.from({ length: count }, () => randVec3(-(2 ** 32), 2 ** 32))
