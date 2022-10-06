@@ -1,7 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.math_cmp import is_le
+from starkware.cairo.common.math import assert_le
 
 from contracts.cairo_math_64x61.math64x61 import Math64x61
 
@@ -12,41 +12,50 @@ func __setup__{syscall_ptr: felt*, range_check_ptr, pedersen_ptr: HashBuiltin*}(
 }
 
 @external
-func setup_correctness() {
+func setup_ln_exp() {
     %{
         given(
-            x = strategy.integers(-2 ** 64, 2 ** 64),
-            y = strategy.integers(-2 ** 64, 2 ** 64),
+            x = strategy.integers(1, 2 ** 64),
         )
     %}
     return ();
 }
 
 @external
-func test_exp{syscall_ptr: felt*, range_check_ptr, pedersen_ptr: HashBuiltin*}(x: felt) {
+func test_ln_exp{syscall_ptr: felt*, range_check_ptr, pedersen_ptr: HashBuiltin*}(x: felt) {
     alloc_locals;
 
     // 0.1% tolerance
     let tolerance = 1;
-    local left_bound: felt;
-    local right_bound: felt;
+    local left_bound_exp: felt;
+    local right_bound_exp: felt;
+    local left_bound_ln: felt;
+    local right_bound_ln: felt;
     %{
         import math
 
-        want = math.exp(ids.x);
+        want_ln = math.log(ids.x)
+        want_exp = math.exp(want_ln);
 
-        ids.left_bound = math.floor((want * (1000 - ids.tolerance)) / 1000);
-        ids.right_bound = math.ceil((want * (1000 + ids.tolerance)) / 1000);
+        ids.left_bound_ln = math.floor((want_ln * (1000 - ids.tolerance)) / 1000);
+        ids.right_bound_ln = math.ceil((want_ln * (1000 + ids.tolerance)) / 1000);
+
+        ids.left_bound_exp = math.floor((want_exp * (1000 - ids.tolerance)) / 1000);
+        ids.right_bound_exp = math.ceil((want_exp * (1000 + ids.tolerance)) / 1000);
     %}
 
     let x_fp = Math64x61.fromFelt(x);
-    let got_fp = Math64x61.exp(x_fp);
-    let got = Math64x61.toFelt(got_fp);
+    let ln_fp = Math64x61.ln(x_fp);
+    let ln = Math64x61.toFelt(ln_fp);
 
-    let left = is_le(left_bound, got);
-    let right = is_le(got, right_bound);
+    assert_le(left_bound_ln, ln);
+    assert_le(ln, right_bound_ln);
 
-    assert left + right = 2;
+    let exp_fp = Math64x61.exp(ln_fp);
+    let exp = Math64x61.toFelt(exp_fp);
+
+    assert_le(left_bound_exp, exp);
+    assert_le(exp, right_bound_exp);
 
     return ();
 }
