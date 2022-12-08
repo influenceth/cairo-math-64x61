@@ -1,6 +1,6 @@
 {
   "name": "@influenceth/cairo-math-64x61",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Fixed point 64.61 math library for Cairo / Starknet",
   "repository": {
     "type": "git",

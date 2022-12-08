@@ -62,7 +62,8 @@ namespace Math64x61 {
   // Calculates the ceiling of a 64.61 value
   func ceil{range_check_ptr}(x: felt) -> felt {
     let (int_val, mod_val) = signed_div_rem(x, ONE, BOUND);
-    let res = (int_val + 1) * ONE;
+    let add_one = is_not_zero(mod_val);
+    let res = (int_val + add_one) * ONE;
     assert64x61(res);
     return res;
   }

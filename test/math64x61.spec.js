@@ -38,6 +38,7 @@ describe('64.61 fixed point math', function () {
   it('should return accurate results for ceiling', async () => {
     const count = 10;
     const xs = Array.from({ length: count }, () => Math.random() * 2 ** 32 - 2 ** 31);
+    xs.push(2.0); // test for ceil on an int
 
     for (const x of xs) {
       const { res } = await contract.call('math64x61_ceil_test', { x: to64x61(x) });
