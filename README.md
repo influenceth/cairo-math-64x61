@@ -1,5 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/cairo_math_64x61.svg)](https://badge.fury.io/py/cairo_math_64x61)
 
+For Cairo 1 see the successor project (WIP) here: https://github.com/influenceth/cubit
+
 # Cairo Math 64x61
 
 A fixed point 64.61 math library for Cairo & Starknet.
