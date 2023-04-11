@@ -1,0 +1,20 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install protostar
+        run: curl -L https://raw.githubusercontent.com/software-mansion/protostar/master/install.sh | bash
+      - name: Activate protostar
+        run: echo "/home/runner/.protostar/dist/protostar" >> $GITHUB_PATH
+      - name: Install deps
+        run: protostar install
+      - name: Run tests
+        run: protostar test
